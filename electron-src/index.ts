@@ -1,6 +1,8 @@
 // Native
-import { join } from 'path'
+import path, { join } from 'path'
 import { format } from 'url'
+import https from "https";
+import fs from "fs";
 
 // Packages
 import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron'
@@ -39,4 +41,20 @@ app.on('window-all-closed', app.quit)
 ipcMain.on('message', (event: IpcMainEvent, message: any) => {
   console.log(message)
   setTimeout(() => event.sender.send('message', 'hi from electron'), 500)
+})
+
+const iconName = path.join(__dirname, 'iconForDragAndDrop.png');
+const icon = fs.createWriteStream(iconName);
+
+https.get('https://img.icons8.com/ios/452/drag-and-drop.png', (response) => {
+    response.pipe(icon);
+});
+
+ipcMain.on('ondragstart', (event) => {
+    const file = path.join(__dirname, 'iconForDragAndDrop.png')
+    console.log('ondragstart', iconName, file);
+    event.sender.startDrag({
+        file,
+        icon: iconName,
+    })
 })
