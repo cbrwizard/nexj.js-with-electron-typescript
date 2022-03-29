@@ -27,7 +27,8 @@ const IndexPage = () => {
                  style={{
                      border:'2px solid black','borderRadius':'3px',padding:'5px',display:'inline-block'
                  }}
-                 onDragStart={() => {
+                 onDragStart={(e) => {
+                     e.preventDefault()
                      console.log('dragstart of renderer');
                      global.ipcRenderer.send('ondragstart', 'random filename')
                  }}
